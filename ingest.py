@@ -38,7 +38,7 @@ def ingest(data_dir="data", db_dir="model-files"):
   chunks = chunk_text(big_text)
 
   #embedding
-  model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+  model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2', device='cpu')
   embeddings = model.encode(chunks)
 
 
