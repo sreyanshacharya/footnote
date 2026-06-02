@@ -5,6 +5,7 @@ import torch
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+import time
 
 
 #load embedding model
@@ -91,6 +92,18 @@ def generate(context, question):
 
 #public api:
 def ask(question):
+  # profile retrieval
+  start_time = time.time()
   context = retrieve(question)
+  retrieval_time = time.time() - start_time
+  
+  # profile generation
+  start_time = time.time()
   generated_ans = generate(context, question)
+  generation_time = time.time() - start_time
+  
+  print(f"\n[profile] retrieval took: {retrieval_time:.4f} seconds")
+  print(f"[profile] generation took: {generation_time:.4f} seconds")
+  print(f"[profile] tokens per second: {200 / generation_time:.2f} t/s\n")
+  
   return generated_ans, context

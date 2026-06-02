@@ -53,8 +53,8 @@ def ingest(data_dir="data", db_dir="model-files"):
   Path(db_dir).mkdir(exist_ok=True)
 
   # saving the memory
-  faiss.write_index(index, "model-files/index.faiss")
-  with open("model-files/chunks.pkl", "wb") as f:
+  faiss.write_index(index, "model_files/index.faiss")
+  with open("model_files/chunks.pkl", "wb") as f:
     pickle.dump(chunks, f)
 
   return pdfcount, len(chunks)
