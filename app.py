@@ -17,22 +17,26 @@ uploaded_files = st.file_uploader(
 )
 
 if uploaded_files:
-  for file in uploaded_files:
-    try:
-      file_bytes = file.getvalue()
-      files = {
-          "file": (file.name, file_bytes, "application/pdf")
-      }
-      response = requests.post(f"{request_url}/ingest", files=files)
-      
-      if response.status_code == 200:
-          result = response.json()
-          st.success(f"successfully loaded! index now contains {result['ingested no. of pdfs']} files.")
-      else:
-          st.error("failed to process document on backend server.")
-            
-    except requests.exceptions.ConnectionError:
-        st.error("backend server is offline.")
+  if(st.button("Hit this to ingest")):
+    with st.status("Ingesting into FAISS Memory...") as status:
+      for file in uploaded_files:
+        try:
+          file_bytes = file.getvalue()
+          files = {"file": (file.name, file_bytes, "application/pdf")}
+          status.write(f"Current file processing into FAISS : {file.name}")
+
+          response = requests.post(f"{request_url}/ingest", files=files)
+          
+          if response.status_code == 200:
+            result = response.json()
+            st.success(f"successfully loaded! Index now contains {result['ingested no. of pdfs']} files.")
+          else:
+            st.error(f"failed to process document {file.name} on backend server.")
+                
+        except requests.exceptions.ConnectionError:
+          st.error("backend server is offline.")
+      status.update(label="Ingestion Complete!", state="complete", expanded=False)
+    st.success("All uploaded files succesfully processed. Ready for a question.")
 
 #Query area
 user_question = st.chat_input("Ask Your Notes :")
