@@ -22,7 +22,7 @@ def chunk_text(text, size=232):
     chunks.append(" ".join(curr_chunk))
   return chunks
 
-def ingest(data_dir="data", db_dir="model-files"):
+def ingest(data_dir="data", db_dir="model_files"):
   data_path = Path(data_dir)
   pdfcount = 0
   big_text = ""
@@ -48,7 +48,7 @@ def ingest(data_dir="data", db_dir="model-files"):
 
   #faiss index
   index = faiss.IndexFlatIP(384)
-  index.add(embeddings)
+  index.add(embeddings) # type: ignore
 
   Path(db_dir).mkdir(exist_ok=True)
 
