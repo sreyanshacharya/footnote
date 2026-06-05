@@ -32,8 +32,82 @@ The execution pipeline follows a standard local RAG flow:
 The easiest way to run the entire multi-service ecosystem is using Docker Compose. Ensure you have Docker and the NVIDIA Container Toolkit installed on your host machine for native GPU passthrough.
 
 ```bash
-git clone [https://github.com/sreyanshacharya/footnote.git](https://github.com/sreyanshacharya/footnote.git)
+git clone https://github.com/sreyanshacharya/footnote.git
 cd footnote
-
-# Build and launch both services simultaneously
 docker compose up --build
+```
+
+Once the containers are successfully running, open your browser to access the environments:
+- **Frontend Application**: http://localhost:8501
+- **Backend API Documentation**: http://localhost:8000/docs
+
+## Local Installation (Alternative)
+```bash
+python -m venv footnote
+footnote\Scripts\activate
+pip install -r requirements.txt
+```
+
+## Running Locally
+
+To run without containers, you must spin up both services concurrently in separate terminal sessions:
+
+**Terminal 1 (Backend Core API):**
+```bash
+uvicorn api:app --reload
+```
+
+**Terminal 2 (Frontend Interface):**
+```bash
+streamlit run app.py
+```
+
+## Example use cases
+
+- Exam revision from lecture notes
+- Searching through technical PDFs
+- Personal knowledge base QA
+- Sensitive document querying
+- Offline study assistant
+
+## Notes
+
+- Models run locally - no external APIs required
+- Optimized for consumer GPUs via 4-bit quantization and double quantization to safely prevent Windows WDDM shared memory overflow (tested on RTX 4050)
+- Persistent data volumes ensure FAISS indices, raw uploads, and HuggingFace cache directories are preserved across container cycles
+
+## Tech Stack
+
+**LLM & NLP**
+- Phi-4-mini-instruct (local LLM)
+- all-MiniLM-L6-v2 from sentence-transformers (Embedding Model)
+- HuggingFace Transformers & Accelerate
+- BitsAndBytes (4-bit NF4 quantization)
+- PyTorch (SDPA implementation)
+
+**Retrieval & API Backend**
+- FAISS (vector similarity search)
+- FastAPI (asynchronous backend framework layout)
+- Uvicorn (ASGI server implementation)
+
+**Document Processing**
+- pypdf
+
+**Application Frontend**
+- streamlit
+
+**Environment & DevOps**
+- Docker & Docker Compose
+- Python
+
+## Author
+
+### Sreyansh Acharya
+- 2nd Year CSE(AI/ML) at GITAM Hyd
+- Interests in Deep Learning, Computer Vision, Astronomy and Scientific Computing
+
+## Connect with me :
+
+- [linkedin](www.linkedin.com/in/sreyanshacharya)
+- [github](https://github.com/sreyanshacharya)
+- [gmail](sreyanshacharyaa@gmail.com)
