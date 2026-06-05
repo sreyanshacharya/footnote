@@ -35,3 +35,24 @@ def ingapi(file : UploadFile = File(...)):
     "ingested no. of pdfs" : pdfcount,
     "length of chunks" : chunklength
     }
+
+@app.get('/files')
+def get_files():
+  data_dir = Path("data")
+  if not data_dir.exists():
+    return {"files": []}
+  
+  files = [f.name for f in data_dir.iterdir() if f.is_file()]
+  return {"files": files}
+
+@app.delete('/clear')
+def clear_index():
+  data_dir = Path("data")
+  model_dir = Path("model_files")
+  
+  if data_dir.exists():
+    shutil.rmtree(data_dir)
+  if model_dir.exists():
+    shutil.rmtree(model_dir)
+    
+  return {"message": "index wiped clean"}
