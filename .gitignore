@@ -1,3 +1,5 @@
 query.py
 torchtest.py
+data/
+model_files/
 !.gitignore
