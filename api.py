@@ -13,7 +13,7 @@ class QueryInput(BaseModel):
 
 @app.get('/')
 async def root():
-  return {"message" : "hello bread, please go to /ask to ask the question related to current sample - COA textbook"}
+  return {"message" : "hello user, please go to /ingest for uploading files, and to /ask to ask questions."}
 
 @app.post('/ask')
 def askapi(item : QueryInput):

@@ -4,8 +4,9 @@ import pickle
 import torch
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, TextIteratorStreamer
 import time
+import threading
 
 
 #load embedding model
@@ -83,21 +84,50 @@ def generate(context, question):
   input_ids = input_tokens["input_ids"].to(llm.device)
   attention_mask = input_tokens["attention_mask"].to(llm.device)
 
-  prompt_len = input_ids.shape[-1]
+  streamer = TextIteratorStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
 
-  generated_ids = llm.generate(
-    input_ids,
-    attention_mask=attention_mask,      
+  generation_kwargs = dict(
+    input_ids=input_ids,
+    attention_mask=attention_mask,
     max_new_tokens=200,
-    pad_token_id=tokenizer.eos_token_id 
+    pad_token_id=tokenizer.eos_token_id,
+    streamer=streamer
   )
 
-  new_tokens = generated_ids[0][prompt_len:]
+  torch.cuda.reset_peak_memory_stats()
+  start_vram = torch.cuda.memory_allocated()
 
-  generated_text = tokenizer.decode(
-    new_tokens,
-    skip_special_tokens=True
-  ).strip()
+  start_time = time.perf_counter()
+
+  thread = threading.Thread(target=llm.generate, kwargs=generation_kwargs)
+  thread.start()
+
+  first_token_time = None
+  token_count = 0
+  generated_text = ""
+
+  for chunk in streamer:
+    if first_token_time is None:
+      first_token_time = time.perf_counter()
+      ttft = (first_token_time - start_time) * 1000
+      print(f"\n[LOG] Time To First Token (TTFT) : {ttft:.4f} seconds")
+      token_count += 1
+    
+    generated_text += (chunk)
+    token_count += 1
+
+  end_time = time.perf_counter()
+  total_time_after_first = end_time - first_token_time #type: ignore
+  itl = (total_time_after_first / max(1, token_count - 1)) * 1000
+
+  end_vram = torch.cuda.memory_allocated()
+  peak_vram = torch.cuda.max_memory_allocated()
+
+  vram_delta_mb = (end_vram - start_vram) / (1024 ** 2)
+  peak_vram_gb = peak_vram / (1024 ** 3)
+  print(f"\n[LOG] Total Tokens Generated : {token_count}")
+  print(f"\n[LOG] Inter-Token Latency (ITL) : {itl:.4f}ms/token")
+  print(f"\n[LOG] VRAM Delta : {vram_delta_mb:+.4f} MB | Peak VRAM Usage : {peak_vram_gb:.4f} GB")
 
   return generated_text
 
