@@ -54,17 +54,8 @@ def retrieve(question):
     context = "\n\n".join([chunks[idx] for idx in I[0]])
     return context
   else:
-    import os
-    print(f"\n--- debug engine room ---")
-    print(f"current working directory: {os.getcwd()}")
-    print(f"looking for index at: {Path(index_path).absolute()} | exists: {Path(index_path).exists()}")
-    print(f"looking for chunks at: {Path(chunks_path).absolute()} | exists: {Path(chunks_path).exists()}")
-    print(f"-------------------------\n")
     raise RuntimeError("missing faiss index or chunks files on disk.")
-  
-#answer generation
-# 1. change this back in your global setup to let accelerate handle 4-bit hooks cleanly:
-# device_map="auto"
+
 
 def generate(context, question):
   messages = [
@@ -110,15 +101,22 @@ def generate(context, question):
     if first_token_time is None:
       first_token_time = time.perf_counter()
       ttft = (first_token_time - start_time) * 1000
-      print(f"\n[LOG] Time To First Token (TTFT) : {ttft:.4f} seconds")
-      token_count += 1
+      print(f"\n[LOG] Time To First Token (TTFT) : {ttft:.4f} milliseconds")
     
     generated_text += (chunk)
     token_count += 1
+  
+  thread.join()
 
   end_time = time.perf_counter()
   total_time_after_first = end_time - first_token_time #type: ignore
   itl = (total_time_after_first / max(1, token_count - 1)) * 1000
+
+  del input_ids
+  del attention_mask
+  del input_tokens
+  del generation_kwargs
+  torch.cuda.empty_cache()
 
   end_vram = torch.cuda.memory_allocated()
   peak_vram = torch.cuda.max_memory_allocated()
@@ -129,7 +127,7 @@ def generate(context, question):
   print(f"\n[LOG] Inter-Token Latency (ITL) : {itl:.4f}ms/token")
   print(f"\n[LOG] VRAM Delta : {vram_delta_mb:+.4f} MB | Peak VRAM Usage : {peak_vram_gb:.4f} GB")
 
-  return generated_text
+  return generated_text, token_count
 
 #public api:
 def ask(question):
@@ -140,13 +138,11 @@ def ask(question):
   
   # profile generation
   start_time = time.time()
-  generated_ans = generate(context, question)
+  generated_ans, tokencount = generate(context, question)
   generation_time = time.time() - start_time
   
   print(f"\n[profile] retrieval took: {retrieval_time:.4f} seconds")
   print(f"[profile] generation took: {generation_time:.4f} seconds")
-  print(f"[profile] tokens per second: {200 / generation_time:.2f} t/s\n")
-
-  torch.cuda.empty_cache()
+  print(f"[profile] tokens per second: {tokencount / generation_time:.2f} t/s\n")
   
   return generated_ans, context
