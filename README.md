@@ -27,6 +27,19 @@ The execution pipeline follows a standard local RAG flow:
 5. When a user asks a question, the query is embedded and FAISS runs a vector similarity search to return the top-k relevant chunks.
 6. Phi-4-mini is fed the explicit context alongside a custom attention mask tensor, generating a grounded response with minimal hallucination risk.
 
+## Performance Profiling & Optimization 📊
+
+This system is explicitly optimized and benchmarked to run stably on highly constrained consumer hardware (Tested on a 6GB VRAM RTX 4050 Mobile GPU). 
+
+* **Concurrency & VRAM Stability:** The backend streaming endpoints are natively instrumented to track Time-To-First-Token (TTFT), Inter-Token Latency (ITL), and GPU memory deltas. Strict asynchronous thread joining and explicit tensor garbage collection ensure a `+0.00 MB` VRAM delta per request, completely neutralizing memory leaks under concurrent multi-user load.
+
+* **Hardware-Aware Constraints:** Based on rigorous automated matrix testing, the retrieval limit is strictly capped at `k=3` chunks, and embeddings are isolated to the CPU. This prevents KV-Cache expansion from causing Out-Of-Memory (OOM) crashes and stops compute thrashing during autoregressive generation.
+
+> **Read the Engineering Logs:** For a deep dive into the raw telemetry data, load testing results, and metric charts, view the `benchmarks/` directory:
+> * [Day 1 - 3: Instrumentation & Concurrency VRAM Leaks](benchmarks/01_instrumentation_and_concurrency.md)
+>
+> * [Day 4 - 5: Matrix Benchmarking & KV-Cache Scaling](benchmarks/02_benchmark_matrix.md)
+
 ## Deployment with Docker
 
 The easiest way to run the entire multi-service ecosystem is using Docker Compose. Ensure you have Docker and the NVIDIA Container Toolkit installed on your host machine for native GPU passthrough.
@@ -103,8 +116,8 @@ streamlit run app.py
 ## Author
 
 ### Sreyansh Acharya
-- 2nd Year CSE(AI/ML) at GITAM Hyd
-- Interests in Deep Learning, Computer Vision, Astronomy and Scientific Computing
+- CSE(AI/ML) at GITAM Hyd
+- Interests in Deep Learning, ML Systems, Astrophysics and Scientific Computing
 
 ## Connect with me :
 

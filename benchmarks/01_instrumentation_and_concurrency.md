@@ -1,5 +1,4 @@
-# Engineering Log: Day 1
-**Date:** June 6, 2026
+# Engineering Log: Days 1 - 3
 
 ## **Focus:** Inference Instrumentation & Concurrency VRAM Leaks
 

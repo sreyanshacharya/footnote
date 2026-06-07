@@ -1,0 +1,134 @@
+[
+  {
+    "embedding_device": "cpu",
+    "k_chunks": 3,
+    "query": "what are the core definitions of a NP Hard Problem?",
+    "retrieval_time_ms": 464.47010000701994,
+    "ttft_ms": 13509.2,
+    "itl_ms": 230.47,
+    "total_tokens": 83,
+    "vram_delta_mb": 8.11,
+    "peak_vram_gb": 3.12
+  },
+  {
+    "embedding_device": "cpu",
+    "k_chunks": 3,
+    "query": "explain the examples of NP Complete Problems in the document.",
+    "retrieval_time_ms": 70.7830999745056,
+    "ttft_ms": 1063.66,
+    "itl_ms": 143.67,
+    "total_tokens": 201,
+    "vram_delta_mb": -0.02,
+    "peak_vram_gb": 3.17
+  },
+  {
+    "embedding_device": "cpu",
+    "k_chunks": 3,
+    "query": "How are all NP Complete problems also NP Hard?",
+    "retrieval_time_ms": 20.51409997511655,
+    "ttft_ms": 756.43,
+    "itl_ms": 88.24,
+    "total_tokens": 171,
+    "vram_delta_mb": -0.02,
+    "peak_vram_gb": 3.17
+  },
+  {
+    "embedding_device": "cpu",
+    "k_chunks": 6,
+    "query": "what are the core definitions of a NP Hard Problem?",
+    "retrieval_time_ms": 12.864099931903183,
+    "ttft_ms": 1791.36,
+    "itl_ms": 96.59,
+    "total_tokens": 201,
+    "vram_delta_mb": -0.03,
+    "peak_vram_gb": 3.87
+  },
+  {
+    "embedding_device": "cpu",
+    "k_chunks": 6,
+    "query": "explain the examples of NP Complete Problems in the document.",
+    "retrieval_time_ms": 15.820000087842345,
+    "ttft_ms": 1888.61,
+    "itl_ms": 88.01,
+    "total_tokens": 201,
+    "vram_delta_mb": -0.03,
+    "peak_vram_gb": 3.97
+  },
+  {
+    "embedding_device": "cpu",
+    "k_chunks": 6,
+    "query": "How are all NP Complete problems also NP Hard?",
+    "retrieval_time_ms": 17.495800042524934,
+    "ttft_ms": 1850.56,
+    "itl_ms": 84.38,
+    "total_tokens": 201,
+    "vram_delta_mb": -0.03,
+    "peak_vram_gb": 3.93
+  },
+  {
+    "embedding_device": "cuda",
+    "k_chunks": 3,
+    "query": "what are the core definitions of a NP Hard Problem?",
+    "retrieval_time_ms": 199.48279997333884,
+    "ttft_ms": 691.64,
+    "itl_ms": 102.4,
+    "total_tokens": 83,
+    "vram_delta_mb": 8.11,
+    "peak_vram_gb": 3.22
+  },
+  {
+    "embedding_device": "cuda",
+    "k_chunks": 3,
+    "query": "explain the examples of NP Complete Problems in the document.",
+    "retrieval_time_ms": 18.08429998345673,
+    "ttft_ms": 761.58,
+    "itl_ms": 94.75,
+    "total_tokens": 201,
+    "vram_delta_mb": -0.02,
+    "peak_vram_gb": 3.26
+  },
+  {
+    "embedding_device": "cuda",
+    "k_chunks": 3,
+    "query": "How are all NP Complete problems also NP Hard?",
+    "retrieval_time_ms": 14.182300074025989,
+    "ttft_ms": 769.44,
+    "itl_ms": 110.76,
+    "total_tokens": 171,
+    "vram_delta_mb": -0.02,
+    "peak_vram_gb": 3.26
+  },
+  {
+    "embedding_device": "cuda",
+    "k_chunks": 6,
+    "query": "what are the core definitions of a NP Hard Problem?",
+    "retrieval_time_ms": 30.174999963492155,
+    "ttft_ms": 1870.97,
+    "itl_ms": 152.89,
+    "total_tokens": 201,
+    "vram_delta_mb": -0.03,
+    "peak_vram_gb": 3.97
+  },
+  {
+    "embedding_device": "cuda",
+    "k_chunks": 6,
+    "query": "explain the examples of NP Complete Problems in the document.",
+    "retrieval_time_ms": 13.86210008058697,
+    "ttft_ms": 1886.84,
+    "itl_ms": 158.02,
+    "total_tokens": 201,
+    "vram_delta_mb": -0.03,
+    "peak_vram_gb": 4.07
+  },
+  {
+    "embedding_device": "cuda",
+    "k_chunks": 6,
+    "query": "How are all NP Complete problems also NP Hard?",
+    "retrieval_time_ms": 11.830899980850518,
+    "ttft_ms": 1849.16,
+    "itl_ms": 94.36,
+    "total_tokens": 201,
+    "vram_delta_mb": -0.03,
+    "peak_vram_gb": 4.03
+  }
+]

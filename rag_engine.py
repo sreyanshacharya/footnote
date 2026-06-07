@@ -41,7 +41,7 @@ llm = AutoModelForCausalLM.from_pretrained(
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 #query retrieval
-def retrieve(question):
+def retrieve(question, k=3):
   if(Path(index_path).is_file() and Path(chunks_path).is_file()):
     index = faiss.read_index("model_files/index.faiss")
     with open("model_files/chunks.pkl", "rb") as f:
@@ -50,7 +50,7 @@ def retrieve(question):
     qvec = emb_model.encode([question]).astype("float32")
     faiss.normalize_L2(qvec)
     #index search
-    D, I = index.search(qvec, k=3)
+    D, I = index.search(qvec, k=k)
     context = "\n\n".join([chunks[idx] for idx in I[0]])
     return context
   else:
@@ -123,22 +123,31 @@ def generate(context, question):
 
   vram_delta_mb = (end_vram - start_vram) / (1024 ** 2)
   peak_vram_gb = peak_vram / (1024 ** 3)
+
+  metrics = {
+      "ttft_ms": round(ttft, 2),
+      "itl_ms": round(itl, 2),
+      "total_tokens": token_count,
+      "vram_delta_mb": round(vram_delta_mb, 2),
+      "peak_vram_gb": round(peak_vram_gb, 2)
+  }
+
   print(f"\n[LOG] Total Tokens Generated : {token_count}")
   print(f"\n[LOG] Inter-Token Latency (ITL) : {itl:.4f}ms/token")
   print(f"\n[LOG] VRAM Delta : {vram_delta_mb:+.4f} MB | Peak VRAM Usage : {peak_vram_gb:.4f} GB")
 
-  return generated_text, token_count
+  return generated_text, token_count, metrics
 
 #public api:
 def ask(question):
   # profile retrieval
   start_time = time.time()
-  context = retrieve(question)
+  context = retrieve(question, 3)
   retrieval_time = time.time() - start_time
   
   # profile generation
   start_time = time.time()
-  generated_ans, tokencount = generate(context, question)
+  generated_ans, tokencount, metrics = generate(context, question)
   generation_time = time.time() - start_time
   
   print(f"\n[profile] retrieval took: {retrieval_time:.4f} seconds")
