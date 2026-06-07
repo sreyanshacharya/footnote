@@ -27,7 +27,7 @@ The execution pipeline follows a standard local RAG flow:
 5. When a user asks a question, the query is embedded and FAISS runs a vector similarity search to return the top-k relevant chunks.
 6. Phi-4-mini is fed the explicit context alongside a custom attention mask tensor, generating a grounded response with minimal hallucination risk.
 
-## Performance Profiling & Optimization 📊
+## Performance Profiling & Optimization 
 
 This system is explicitly optimized and benchmarked to run stably on highly constrained consumer hardware (Tested on a 6GB VRAM RTX 4050 Mobile GPU). 
 
@@ -85,7 +85,7 @@ streamlit run app.py
 
 ## Notes
 
-- Models run locally - no external APIs required
+- Models run locally - no cloud APIs required
 - Optimized for consumer GPUs via 4-bit quantization and double quantization to safely prevent Windows WDDM shared memory overflow (tested on RTX 4050)
 - Persistent data volumes ensure FAISS indices, raw uploads, and HuggingFace cache directories are preserved across container cycles
 
