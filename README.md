@@ -89,6 +89,10 @@ streamlit run app.py
 - Optimized for consumer GPUs via 4-bit quantization and double quantization to safely prevent Windows WDDM shared memory overflow (tested on RTX 4050)
 - Persistent data volumes ensure FAISS indices, raw uploads, and HuggingFace cache directories are preserved across container cycles
 
+## Known Limitations & Future Work
+
+While the system is highly stable for sequential queries, concurrent multi-user requests currently induce compute thrashing. Due to the inherent hardware limits of a 6GB VRAM mobile GPU, the backend does not implement continuous batching or an asynchronous request queue. Simultaneous matrix multiplications will safely execute without Out-Of-Memory (OOM) crashes, but will result in inflated Time-To-First-Token (TTFT) and degraded generation latency.
+
 ## Tech Stack
 
 **LLM & NLP**
